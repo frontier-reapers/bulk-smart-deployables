@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=0.18.0 <19",
+    "pnpm": ">=9.15.0"
+  },
   "scripts": {
     "build": "mud build",
     "clean": "forge clean && rimraf src/codegen",
@@ -27,7 +31,7 @@
   "devDependencies": {
     "@types/node": "^18.15.11",
     "ds-test": "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0",
-    "forge-std": "https://github.com/foundry-rs/forge-std.git#74cfb77e308dd188d2f58864aaf44963ae6b88b1",
+    "forge-std": "https://github.com/foundry-rs/forge-std.git#999be66ec94c78090087f674bbf52ce1cca12b75",
     "prettier": "^2.6.2",
     "prettier-plugin-solidity": "1.1.3",
     "solhint": "^3.3.7",
