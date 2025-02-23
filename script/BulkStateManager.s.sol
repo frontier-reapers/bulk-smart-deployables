@@ -25,11 +25,11 @@ contract BulkStateManager is Script {
   using SmartDeployableLib for SmartDeployableLib.World;
 
   function bringAllTurretsOnline(address worldAddress) external {
-    converge(worldAddress, SmartAssemblyType.SMART_TURRET, State.ANCHORED);
+    converge(worldAddress, SmartAssemblyType.SMART_TURRET, State.ONLINE);
   }
 
   function bringAllTurretsOffline(address worldAddress) external {
-    converge(worldAddress, SmartAssemblyType.SMART_TURRET, State.ONLINE);
+    converge(worldAddress, SmartAssemblyType.SMART_TURRET, State.ANCHORED);
   }
 
   function converge(address worldAddress, SmartAssemblyType targetType, State targetState) public {
@@ -85,8 +85,18 @@ contract BulkStateManager is Script {
 
       State state = DeployableState.getCurrentState(smartObjectId);
 
-      if (state != targetState) {
-        console.log("Skipping Token ID:", tokenId, "(Wrong State)");
+      if (state == targetState) {
+        console.log("Skipping Token ID:", tokenId, "(Already in Target State)");
+        continue;
+      }
+
+      if (state == State.UNANCHORED) {
+        console.log("Skipping Token ID:", tokenId, "(Unanchored)");
+        continue;
+      }
+
+      if (state == State.DESTROYED) {
+        console.log("Skipping Token ID:", tokenId, "(Destroyed)");
         continue;
       }
 
@@ -98,19 +108,19 @@ contract BulkStateManager is Script {
         continue;
       }
 
-      if (targetState == State.ANCHORED && state == State.ANCHORED) {
+      if (targetState == State.ONLINE && state == State.ANCHORED) {
         console.log("Bringing Token ID Online:", tokenId);
         smartDeployable.bringOnline(smartObjectId);
         continue;
       }
 
-      if (targetState == State.ONLINE && state == State.ONLINE) {
+      if (targetState == State.ANCHORED && state == State.ONLINE) {
         console.log("Bringing Token ID Offline:", tokenId);
         smartDeployable.bringOffline(smartObjectId);
         continue;
       }
 
-      console.log("Token ID:", tokenId);
+      console.log("WARNING Token ID:", tokenId, " - Not Matched");
     }
 
     vm.stopBroadcast();
